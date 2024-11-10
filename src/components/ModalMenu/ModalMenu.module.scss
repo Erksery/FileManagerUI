@@ -1,0 +1,28 @@
+.folderMenu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  right: 0%;
+  top: 100%;
+  margin-top: 5px;
+  padding: 6px;
+
+  width: 190px;
+  background-color: rgb(48, 48, 48);
+  border-radius: 10px;
+  z-index: 95;
+
+  button {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: 40px;
+    font-size: 13px;
+    background-color: rgb(48, 48, 48);
+  }
+}

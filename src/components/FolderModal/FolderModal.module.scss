@@ -1,0 +1,135 @@
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+}
+
+.container {
+  display: flex;
+
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  width: 500px;
+
+  .editFolder {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .inputContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      padding: 0 10px;
+      width: 100%;
+      height: 50px;
+      border: solid 1px rgb(87, 87, 87);
+      background-color: rgb(65, 65, 65);
+      border-radius: 10px;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: 0.25s;
+
+      p {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: rgb(145, 145, 145);
+      }
+      input {
+        border: none;
+        background-color: transparent;
+        font-family: "Nunito", sans-serif;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      &:focus-within {
+        border: solid 1px rgb(60, 112, 224);
+      }
+    }
+
+    .privacySelector {
+      position: relative;
+      user-select: none;
+
+      .privacyModal {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+        gap: 5px;
+        top: 100%;
+        width: 100%;
+        border-radius: 10px;
+        background-color: rgb(48, 48, 48);
+      }
+
+      .privacyCard {
+        display: flex;
+
+        width: 100%;
+        height: 80px;
+        border-radius: 10px;
+        background-color: rgb(65, 65, 65);
+        cursor: pointer;
+
+        .iconContainer {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 80px;
+          height: 80px;
+          border-radius: 12px;
+          background-color: rgb(60, 60, 60);
+        }
+
+        .privacyInfo {
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          margin-left: 10px;
+          margin-top: 5px;
+
+          p {
+            margin: 0;
+            font-size: 14px;
+          }
+        }
+
+        .additionalInfo {
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          p {
+            width: 400px;
+            font-size: 11px;
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+}
