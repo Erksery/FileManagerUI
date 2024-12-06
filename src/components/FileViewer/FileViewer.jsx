@@ -4,19 +4,25 @@ import {
   Icon16ArrowLeftOutline,
   Icon16Add,
   Icon24Search,
+  Icon24NewsfeedOutline,
 } from "@vkontakte/icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserLogo } from "../UserLogo/UserLogo";
 import { SearchModal } from "../SearchModal/SearchModal";
 import { AnimatePresence } from "framer-motion";
+import { UserMenu } from "../UserMenu/UserMenu";
+import { setOpen } from "../../store/slices/menu";
 
 function FileViewer({ id, children }) {
   const [searchModal, setSearchModal] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
+
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userData.userData);
   const menu = useSelector((state) => state.menu.open);
 
   return (
-    <div style={{ marginLeft: menu ? 275 : 0 }} className={styles.fileViewer}>
+    <div style={{ marginLeft: menu ? 305 : 0 }} className={styles.fileViewer}>
       <AnimatePresence>
         {searchModal && (
           <SearchModal
@@ -28,6 +34,14 @@ function FileViewer({ id, children }) {
       </AnimatePresence>
       <div className={styles.fileHeader}>
         <div className={styles.toolsContainer}>
+          {!menu && (
+            <button
+              onClick={() => dispatch(setOpen(!menu))}
+              style={{ transform: "rotate(-90deg)" }}
+            >
+              <Icon24NewsfeedOutline width={20} />
+            </button>
+          )}
           <button>
             <Icon16Add width={16} />
           </button>
@@ -37,7 +51,11 @@ function FileViewer({ id, children }) {
           </button>
         </div>
         <div className={styles.userInfoContainer}>
-          {user && <UserLogo userData={user} />}
+          <AnimatePresence>{userMenu && <UserMenu />}</AnimatePresence>
+
+          <button onClick={() => setUserMenu((prev) => !prev)}>
+            {user && <UserLogo userData={user} />}
+          </button>
         </div>
       </div>
       {children}

@@ -1,0 +1,66 @@
+@import "@/variables";
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+
+  .logoContainer {
+    position: absolute;
+    padding: 7px;
+    top: 0;
+    left: 50%;
+    margin: auto;
+    transform: translate(-50%, -50%);
+    border-radius: 100px;
+    background-color: $menu-color;
+  }
+
+  .infoContainer {
+    display: flex;
+    width: 100%;
+    padding-top: 50px;
+
+    div {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 100%;
+      gap: 5px;
+
+      & > * {
+        text-align: center;
+        margin: 0;
+      }
+
+      p {
+        color: gray;
+      }
+    }
+  }
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.25s;
+    width: 100%;
+    color: white;
+    border-radius: 8px;
+    background-color: $input-background;
+    box-sizing: border-box;
+  }
+  .exitButton {
+    color: $button-delete-color;
+    background-color: $button-red-color;
+
+    &:hover {
+      background-color: $button-red-color;
+    }
+  }
+}

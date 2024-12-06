@@ -7,7 +7,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 import { setUserData } from "./store/slices/userData";
-import { ErrorComponent } from "./components/ErrorComponent/ErrorComponent";
+import { Alert } from "./components/Alert/Alert";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ function App() {
   return (
     <>
       <Routers />
-      <ErrorComponent />
+      <Alert />
     </>
   );
 }

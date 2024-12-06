@@ -11,105 +11,35 @@ function Uploader({ id, openFileUploader, setOpenFileUploader, setFiles }) {
   const [loading, setLoading] = useState(false);
   const [isFolderUpload, setIsFolderUpload] = useState(false);
   const uploadRef = useRef();
-  const { createFolder } = useCreateFolder();
 
   const close = () => {
     setOpenFileUploader(false);
   };
 
-  const createFoldersRecursively = async (filePathParts, parentId) => {
-    const folderMap = {};
-    let currentParentId = parentId;
-
-    for (const folderName of filePathParts) {
-      const currentPath = folderMap[currentParentId]
-        ? `${folderMap[currentParentId]}/${folderName}`
-        : folderName;
-
-      if (!folderMap[currentPath]) {
-        try {
-          const newFolderId = await createFolder({
-            id: currentParentId,
-            name: folderName,
-          });
-          folderMap[currentPath] = newFolderId;
-        } catch (error) {
-          console.error("Ошибка при создании папки:", error);
-          throw new Error("Ошибка при создании папки.");
-        }
-      }
-
-      currentParentId = folderMap[currentPath]; // Обновляем текущий родительский ID
-    }
-
-    return currentParentId; // Возвращаем ID последней созданной папки
-  };
-
   const createFile = async (selectedFiles) => {
     setLoading(true);
-    setError("");
 
     try {
-      if (isFolderUpload) {
-        const uploadedFiles = await Promise.all(
-          Array.from(selectedFiles).map(async (file) => {
-            const filePathParts = file.webkitRelativePath.split("/");
-            const fileName = filePathParts.pop();
+      const uploadedFiles = await Promise.all(
+        Array.from(selectedFiles).map(async (file) => {
+          const formData = new FormData();
+          formData.append("file", file);
 
-            // Получаем ID последней созданной папки для файла
-            const targetFolderId = await createFoldersRecursively(
-              filePathParts,
-              id
-            );
+          const response = await axios.post("/api/files/createFile", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params: {
+              folder: id,
+            },
+          });
 
-            const formData = new FormData();
-            formData.append("file", file);
+          return response.data.file;
+        })
+      );
 
-            const response = await axios.post(
-              "/api/files/createFile",
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                params: {
-                  folder: targetFolderId,
-                },
-              }
-            );
-
-            return response.data.file;
-          })
-        );
-
-        setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
-      } else {
-        const uploadedFiles = await Promise.all(
-          Array.from(selectedFiles).map(async (file) => {
-            const formData = new FormData();
-            formData.append("file", file);
-
-            const response = await axios.post(
-              "/api/files/createFile",
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                params: {
-                  folder: id,
-                },
-              }
-            );
-
-            return response.data.file;
-          })
-        );
-
-        setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
-      }
+      setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
 
       setOpenFileUploader(false);
     } catch (err) {
@@ -153,7 +83,7 @@ function Uploader({ id, openFileUploader, setOpenFileUploader, setFiles }) {
                   checked={isFolderUpload}
                   onChange={(e) => setIsFolderUpload(e.target.checked)}
                 />
-                Загрузить как папку
+                Загрузить из папки
               </label>
             </div>
 

@@ -1,0 +1,42 @@
+@import "@/variables";
+
+.container {
+  position: fixed;
+  display: none;
+
+  width: 100%;
+  bottom: 0;
+  height: 56px;
+  background-color: $menu-color;
+  z-index: $z-index-menu;
+
+  @media (max-width: 534px) {
+    display: flex;
+  }
+
+  .buttonsList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    width: 100%;
+
+    button {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      width: 56px;
+      height: 56px;
+      color: gray;
+      background-color: transparent;
+
+      label {
+        margin-top: 2px;
+        font-size: 11px;
+      }
+    }
+  }
+}

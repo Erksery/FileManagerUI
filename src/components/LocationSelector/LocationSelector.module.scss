@@ -1,0 +1,71 @@
+@import "@/variables";
+
+.locationSelector {
+  position: relative;
+  height: 100%;
+
+  .selectorContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+    width: 250px;
+    top: 100%;
+    right: 0%;
+    border-radius: 12px;
+    border: solid 1px rgb(87, 87, 87);
+    background-color: $input-background;
+    overflow: hidden;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      width: 100%;
+      height: 60px;
+      border: none;
+      border-radius: 12px;
+      box-sizing: border-box;
+
+      .iconContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background-color: transparent;
+      }
+
+      p {
+        font-size: 14px;
+        margin: 0;
+      }
+      .locationInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .description {
+          font-size: 11px;
+          color: gray;
+        }
+      }
+    }
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    gap: 2px;
+    width: 70px;
+    height: 100%;
+    border-radius: 10px;
+    border: solid 1px rgb(87, 87, 87);
+    background-color: $input-background;
+  }
+}

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import styles from "./FileList.module.scss";
-import Viewer from "../Viewer/Viewer";
 import FileModal from "../FileModal/FileModal";
-import { useSelector } from "react-redux";
 import { AnimatePresence } from "framer-motion";
+import { SkeletonFileContainer } from "../Skeletons/FileContainer/SkeletonFileContainer";
+
+const Viewer = React.lazy(() =>
+  import("../Viewer/Viewer").then((module) => ({ default: module.Viewer }))
+);
 
 export const FileList = ({
   files,
@@ -12,22 +15,22 @@ export const FileList = ({
   openFile,
   setOpenFile,
 }) => {
-  const menu = useSelector((state) => state.menu.open);
   return (
     <>
       {files.length > 0 ? (
         <>
           <div className={styles.table}>
             {files.map((file, index) => (
-              <Viewer
-                key={file.id}
-                index={index}
-                data={file}
-                deleteFile={deleteFile}
-                editFile={editFile}
-                openFile={openFile}
-                setOpenFile={setOpenFile}
-              />
+              <Suspense fallback={<SkeletonFileContainer />} key={file.id}>
+                <Viewer
+                  index={index}
+                  data={file}
+                  deleteFile={deleteFile}
+                  editFile={editFile}
+                  openFile={openFile}
+                  setOpenFile={setOpenFile}
+                />
+              </Suspense>
             ))}
           </div>
           <AnimatePresence>

@@ -9,16 +9,11 @@
   border-radius: 18px;
   padding: 0;
   width: 100%;
-  max-width: 200px;
-  background-color: rgba(29, 29, 29, 255);
+
+  background-color: $container-background;
   transition: 0.2s;
   user-select: none;
   cursor: pointer;
-
-  @media (min-width: 768px) {
-    max-width: 200px;
-    width: 100%;
-  }
 
   @media (min-width: 1024px) {
     max-width: 200px;
@@ -44,8 +39,26 @@
   align-items: center;
   width: 100%;
   user-select: none;
-  padding: 0px 10px 10px 10px;
+  padding: 0px 8px 6px 8px;
   box-sizing: border-box;
+
+  form {
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      border-radius: 6px;
+      background-color: transparent;
+      font-family: "Nunito", sans-serif;
+
+      outline: none;
+      cursor: pointer;
+
+      &:focus-within {
+        border: solid 1px rgb(60, 112, 224);
+      }
+    }
+  }
 }
 
 .menuButton {
@@ -67,6 +80,7 @@
 
   p {
     display: -webkit-box;
+    width: 150px;
     word-wrap: break-word;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -75,6 +89,10 @@
     color: gray;
     font-size: 12px;
     margin: 0;
+
+    @media (max-width: 768px) {
+      width: 100px;
+    }
   }
   .name {
     display: -webkit-box;
@@ -87,47 +105,13 @@
     color: lightgray;
     user-select: none;
     font-size: 14px;
+
+    @media (max-width: 768px) {
+      width: 100px;
+    }
   }
 }
 
 .menuContainer {
   position: relative;
-}
-.fileMenu {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  margin-top: 5px;
-  padding: 6px;
-
-  width: 190px;
-
-  background-color: $menu-color;
-  border-radius: 10px;
-  border: solid 1px $menu-border-color;
-  z-index: 95;
-
-  button {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    gap: 6px;
-    padding: 0 10px;
-    width: 100%;
-    height: 40px;
-    font-size: $menu-text-font-size;
-    font-weight: $menu-text-font-weight;
-    color: $menu-text-color;
-
-    background-color: transparent;
-  }
-
-  hr {
-    width: 100%;
-    margin: 0 0 2px 0;
-    border: solid 1px $menu-border-color;
-  }
 }

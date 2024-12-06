@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeFolder } from "../store/slices/folders";
 import axios from "axios";
 
+import { setError } from "../store/slices/errors";
+
 export const useDeleteFolder = () => {
   const dispatch = useDispatch();
 
@@ -25,6 +27,7 @@ export const useDeleteFolder = () => {
         }
       } catch (err) {
         console.error("Ошибка при удалении папки", err);
+        dispatch(setError(err.response));
       }
     },
     [dispatch]

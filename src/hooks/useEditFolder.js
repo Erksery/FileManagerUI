@@ -1,7 +1,11 @@
 import axios from "axios";
 import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setError } from "../store/slices/errors";
 
 export const useEditFolder = () => {
+  const dispatch = useDispatch();
+
   const editFolder = useCallback(async (idFolder, editedFolderData) => {
     try {
       await axios.post(
@@ -18,6 +22,7 @@ export const useEditFolder = () => {
       );
     } catch (err) {
       console.error("Ошибка редактирования папки", err);
+      dispatch(setError(err.response));
     }
   }, []);
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./ModalMenu.module.scss";
+import { motion } from "framer-motion";
 
-export const ModalMenu = ({ buttons, open, setOpen }) => {
+export const ModalMenu = ({ buttons, setOpen }) => {
   const modalRef = useRef();
 
   const closeMenu = () => {
@@ -23,14 +24,24 @@ export const ModalMenu = ({ buttons, open, setOpen }) => {
   }, [closeMenu]);
 
   return (
-    <div ref={modalRef} className={styles.folderMenu}>
+    <motion.div
+      ref={modalRef}
+      className={styles.folderMenu}
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+    >
       {buttons &&
         buttons.map((button, index) => (
-          <button key={index} onClick={button.event}>
+          <button
+            style={{ color: button.color }}
+            key={index}
+            onClick={button.event}
+          >
             {button.icon}
             {button.name}
           </button>
         ))}
-    </div>
+    </motion.div>
   );
 };

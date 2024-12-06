@@ -15,6 +15,10 @@ export const useFetchFiles = (id) => {
           return;
         }*/
     try {
+      if (!navigator.onLine) {
+        throw new Error("Нет подключения к интернету. Проверьте соединение.");
+      }
+
       const authToken = localStorage.getItem("token");
       if (!authToken) {
         navigate("/login");

@@ -4,199 +4,222 @@ import React, {
   useEffect,
   useCallback,
   Fragment,
+  memo,
+  useMemo,
 } from "react";
 import styles from "./FileContainer.module.scss";
 import {
   Icon16MoreHorizontal,
   Icon24WriteOutline,
-  Icon24DeleteOutlineAndroid,
+  Icon24DeleteOutline,
   Icon24Folder,
   Icon24ViewOutline,
+  Icon24DownloadOutline,
 } from "@vkontakte/icons";
 import { AnimatePresence, motion } from "framer-motion";
+import { FileMenu } from "../FileMenu/FileMenu";
+import { FileMenuMobile } from "../FileMenuMobile/FileMenuMobile";
+import { useMobile } from "../../hooks/useMobile";
+import { SkeletonFileContainer } from "../Skeletons/FileContainer/SkeletonFileContainer";
 
-function FileContainer({
-  children,
-  data,
-  deleteFile,
-  editFile,
-  openFile,
-  setOpenFile,
-  index,
-}) {
-  const [fileMenu, setFileMenu] = useState(false);
-  const [editName, setEditName] = useState(false);
-  const [editedFileName, setEditedFileName] = useState(data.originalName);
-  const [menuPosition, setMenuPosition] = useState({ top: 30, right: 0 });
+export const FileContainer = memo(
+  ({ children, data, deleteFile, editFile, setOpenFile, index }) => {
+    const [fileMenu, setFileMenu] = useState(false);
+    const [editName, setEditName] = useState(false);
+    const [editedFileName, setEditedFileName] = useState(data.originalName);
+    const [menuPosition, setMenuPosition] = useState({ top: 30, right: 0 });
+    const [isVisible, setIsVisible] = useState(false);
 
-  const containerRef = useRef();
-  const fileContainerRef = useRef();
+    const containerRef = useRef();
+    const fileContainerRef = useRef();
+    const observerRef = useRef();
 
-  const formattedDate = new Date(data.createdAt).toLocaleDateString("ru-RU", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  });
+    const { isMobile } = useMobile();
 
-  const menuButtons = [
-    {
-      id: 1,
-      icon: <Icon24ViewOutline width={20} />,
-      name: "Открыть",
-      event: (e) => {
-        e.stopPropagation();
-      },
-      separator: true,
-    },
-    {
-      id: 2,
-      icon: <Icon24WriteOutline width={20} />,
-      name: "Переименовать",
-      event: (e) => {
-        e.stopPropagation();
-        handleEditFileName();
-      },
-      separator: false,
-    },
-    {
-      id: 3,
-      icon: <Icon24DeleteOutlineAndroid width={20} />,
-      name: "Удалить",
-      event: (e) => {
-        e.stopPropagation();
-        deleteFile(data.id);
-      },
-      separator: false,
-    },
-  ];
+    const handleEditFileName = useCallback(() => {
+      setEditName(true);
+      setFileMenu(false);
+    }, []);
 
-  const toggleMenu = (e) => {
-    e.preventDefault;
-    e.stopPropagation();
-    setFileMenu((prev) => !prev);
-  };
+    const menuButtons = useMemo(
+      () => [
+        {
+          id: 1,
+          icon: <Icon24ViewOutline width={20} />,
+          name: "Открыть",
+          event: (e) => {
+            e.stopPropagation();
+            setOpenFile(index + 1);
+            setFileMenu(false);
+          },
+          separator: true,
+          color: "white",
+        },
+        {
+          id: 2,
+          icon: <Icon24WriteOutline width={20} />,
+          name: "Переименовать",
+          event: (e) => {
+            e.stopPropagation();
+            handleEditFileName();
+          },
+          separator: false,
+          color: "white",
+        },
+        {
+          id: 3,
+          icon: <Icon24DownloadOutline width={20} />,
+          name: "Скачать",
+          event: (e) => {
+            window.open(`http://192.168.0.5:3005/image/${data.name}`);
+            setFileMenu(false);
+          },
+          separator: false,
+          color: "white",
+        },
+        {
+          id: 4,
+          icon: <Icon24DeleteOutline width={20} />,
+          name: "Удалить",
+          event: (e) => {
+            e.stopPropagation();
+            deleteFile(data.id);
+            setFileMenu(false);
+          },
+          separator: false,
+          color: "#ff4a53",
+        },
+      ],
+      [setOpenFile, index, handleEditFileName, data.name, deleteFile]
+    );
 
-  const handleEditFileName = () => {
-    setEditName(true);
-    setFileMenu(false);
-  };
+    const toggleMenu = useCallback((e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setFileMenu((prev) => !prev);
+    }, []);
 
-  const handleClickOutside = useCallback(
-    (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setFileMenu(false);
-      }
-      if (
-        fileContainerRef.current &&
-        !fileContainerRef.current.contains(e.target)
-      ) {
-        if (editName) {
-          setEditName(false);
-          setEditedFileName(data.originalName);
+    useEffect(() => {
+      observerRef.current = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting);
+          if (entry.isIntersecting) {
+            observerRef.current.unobserve(entry.target);
+          }
+        },
+        {
+          threshold: 0.1,
         }
+      );
+
+      if (fileContainerRef.current) {
+        observerRef.current.observe(fileContainerRef.current);
       }
-    },
-    [editName, data.originalName]
-  );
-  useEffect(() => {
-    window.addEventListener("mousedown", handleClickOutside);
 
-    return () => {
-      window.removeEventListener("mousedown", handleClickOutside);
+      return () => {
+        if (observerRef.current) {
+          observerRef.current.disconnect();
+        }
+      };
+    }, []);
+
+    useEffect(() => {
+      if (fileMenu) {
+        const menuRect = containerRef.current.getBoundingClientRect();
+        const containerRect = fileContainerRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        const top =
+          menuRect.height < windowHeight - containerRect.bottom - 100
+            ? 30
+            : -(menuRect.height + 160);
+
+        setMenuPosition({ top });
+      }
+    }, [fileMenu]);
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (containerRef.current && !containerRef.current.contains(e.target)) {
+          setFileMenu(false);
+        }
+      };
+
+      window.addEventListener("click", handleClickOutside);
+
+      return () => {
+        window.removeEventListener("click", handleClickOutside);
+      };
+    }, [setFileMenu]);
+
+    const handleSaveFileName = (e) => {
+      e.preventDefault();
+
+      data.originalName = editedFileName;
+      setEditName(false);
+
+      editFile(data.id, editedFileName);
     };
-  }, [handleClickOutside]);
 
-  useEffect(() => {
-    if (fileMenu) {
-      const menuRect = containerRef.current.getBoundingClientRect();
-      const containerRect = fileContainerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-
-      const top =
-        menuRect.height < windowHeight - containerRect.bottom
-          ? 30
-          : -(menuRect.height + 115);
-
-      setMenuPosition({ top });
-    }
-  }, [fileMenu]);
-
-  const handleSaveFileName = (e) => {
-    e.preventDefault();
-
-    data.originalName = editedFileName;
-    setEditName(false);
-
-    editFile(data.id, editedFileName);
-  };
-
-  return (
-    <div
-      ref={fileContainerRef}
-      style={{ backgroundColor: editName && "#212121" }}
-      className={styles.container}
-    >
+    return (
       <div
-        onDoubleClick={() => setOpenFile(index + 1)}
-        className={styles.imageContainer}
+        ref={fileContainerRef}
+        style={{ backgroundColor: editName && "#212121" }}
+        className={styles.container}
       >
-        {children}
-      </div>
-      <div className={styles.nameContainer}>
-        {editName ? (
-          <form onSubmit={handleSaveFileName}>
-            <input
-              value={editedFileName}
-              onChange={(e) => setEditedFileName(e.target.value)}
-              autoFocus
-            />
-          </form>
-        ) : (
+        {isVisible ? (
           <>
-            <div className={styles.infoContainer}>
-              <div className={styles.info}>
-                <p>{data.type}</p>
-              </div>
-              <div className={styles.name}>{data.originalName}</div>
+            <div
+              onDoubleClick={() => setOpenFile(index + 1)}
+              className={styles.imageContainer}
+            >
+              {children}
             </div>
-            <div ref={containerRef} className={styles.menuContainer}>
-              <button onClick={toggleMenu} className={styles.menuButton}>
-                <Icon16MoreHorizontal width={18} height={18} />
-              </button>
-              <AnimatePresence>
-                {fileMenu && (
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 20, opacity: 0 }}
-                    transition={{
-                      ease: "easeInOut",
-                    }}
-                    style={{
-                      right: `0px`,
-                      top: `${menuPosition.top}px`,
-                    }}
-                    className={styles.fileMenu}
-                  >
-                    {menuButtons.map((button, idx) => (
-                      <Fragment key={button.id}>
-                        <button key={idx} onClick={button.event}>
-                          {button.icon}
-                          {button.name}
-                        </button>
-                        {button.separator && <hr />}
-                      </Fragment>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className={styles.nameContainer}>
+              {editName ? (
+                <form onSubmit={handleSaveFileName}>
+                  <input
+                    value={editedFileName}
+                    onChange={(e) => setEditedFileName(e.target.value)}
+                    autoFocus
+                  />
+                </form>
+              ) : (
+                <>
+                  <div className={styles.infoContainer}>
+                    <div className={styles.info}>
+                      <p>{data.type}</p>
+                    </div>
+                    <div className={styles.name}>{data.originalName}</div>
+                  </div>
+                  <div ref={containerRef} className={styles.menuContainer}>
+                    <button onClick={toggleMenu} className={styles.menuButton}>
+                      <Icon16MoreHorizontal width={16} height={16} />
+                    </button>
+
+                    {isMobile ? (
+                      <FileMenuMobile
+                        fileMenu={fileMenu}
+                        setFileMenu={setFileMenu}
+                        menuPosition={menuPosition}
+                        menuButtons={menuButtons}
+                      />
+                    ) : (
+                      <FileMenu
+                        fileMenu={fileMenu}
+                        menuPosition={menuPosition}
+                        menuButtons={menuButtons}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </>
+        ) : (
+          <SkeletonFileContainer />
         )}
       </div>
-    </div>
-  );
-}
-
-export default FileContainer;
+    );
+  }
+);

@@ -1,0 +1,9 @@
+@import "@/variables";
+.container {
+  min-height: 200px;
+  border-radius: 18px;
+  padding: 0;
+  width: 100%;
+  max-width: 200px;
+  background-color: $container-background;
+}

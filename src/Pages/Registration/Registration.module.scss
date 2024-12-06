@@ -77,6 +77,17 @@ img {
 }
 
 @media (max-width: 768px) {
+  .regContainer {
+    justify-content: center;
+    padding: 10px;
+    overflow-y: hidden;
+
+    .pageName {
+      h1 {
+        font-size: 30px;
+      }
+    }
+  }
   .loginBlock {
     flex: 1;
   }

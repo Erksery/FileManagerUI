@@ -1,0 +1,40 @@
+@import "@/variables";
+
+.fileMenu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 5px;
+  padding: 6px;
+
+  width: 180px;
+
+  background-color: $menu-color;
+  border-radius: 10px;
+  border: solid 1px $menu-border-color;
+  z-index: 95;
+
+  button {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    width: 100%;
+    height: 40px;
+    font-size: $menu-text-font-size;
+    font-weight: $menu-text-font-weight;
+    color: $menu-text-color;
+
+    background-color: transparent;
+  }
+
+  hr {
+    width: 100%;
+    margin: 0 0 2px 0;
+    border: solid 1px $menu-border-color;
+  }
+}

@@ -4,30 +4,21 @@ import styles from "./Login.module.scss";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContainer from "../../components/AuthContainer/AuthContainer";
+import { useLogin } from "../../hooks/useLogin";
 
 function Login() {
   const [inputValue, setInputValue] = useState({ login: "", password: "" });
   const navigate = useNavigate();
-
-  const logSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.get("/api/user/login", { params: inputValue });
-      console.log(res.data);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch (err) {
-      console.log("Ошибка входе в аккаунт", err);
-    } finally {
-    }
-  };
+  const { login } = useLogin();
 
   return (
     <>
       <AuthContainer>
-        <form onSubmit={logSubmit} className={styles.logContainer}>
-          <p className={styles.pageName}>Авторизация</p>
-          <h1>Добро пожаловать!</h1>
+        <form
+          onSubmit={(e) => login(inputValue, e)}
+          className={styles.logContainer}
+        >
+          <h1>Авторизация</h1>
           <p>
             Нету аккаунта? <Link to={"/registration"}>Зарегистрируйся</Link>
           </p>
@@ -48,7 +39,6 @@ function Login() {
               type="password"
               placeholder="Пароль"
             />
-            <Link>Восстановить пароль</Link>
 
             <button
               type="submit"

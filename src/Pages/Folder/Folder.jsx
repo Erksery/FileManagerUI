@@ -24,9 +24,11 @@ import {
   Icon24InfoCircleOutline,
   Icon24DeleteOutlineAndroid,
 } from "@vkontakte/icons";
+import { BottomMenu } from "../../components/BottomMenu/BottomMenu";
 
 function Folder() {
   const [openFileUploader, setOpenFileUploader] = useState(false);
+  const [openMobileMenu, setOpenMobileMenu] = useState(false);
   const [openFile, setOpenFile] = useState(null);
   const { id } = useParams();
   const containerRef = useRef();
@@ -42,7 +44,9 @@ function Folder() {
       {
         id: 1,
         name: "Создать папку",
-        event: () => createFolder({ id }),
+        event: () => {
+          createFolder({ id }), setOpenMobileMenu(false);
+        },
         icon: <Icon24FolderSimplePlusOutline width={20} />,
         color: null,
         backgroundColor: null,
@@ -50,34 +54,16 @@ function Folder() {
       {
         id: 2,
         name: "Добавить файл",
-        event: () => setOpenFileUploader(true),
+        event: () => {
+          setOpenFileUploader(true), setOpenMobileMenu(false);
+        },
         icon: <Icon24DocumentPlusOutline width={20} />,
         color: null,
         backgroundColor: null,
       },
-      {
-        id: 3,
-        name: "Сведения",
-        event: () => console.log("В разработке"),
-        icon: <Icon24InfoCircleOutline width={20} />,
-        color: null,
-        backgroundColor: null,
-      },
-      {
-        id: 4,
-        name: "Удалить",
-        event: () => console.log("В разработке"),
-        icon: <Icon24DeleteOutlineAndroid width={20} fill="#f7848f" />,
-        color: "#f7848f",
-        backgroundColor: "#ff000d2c",
-      },
     ],
     [createFolder]
   );
-
-  /*useEffect(() => {
-    fetchFolders();
-  }, [fetchFolders]);*/
 
   useEffect(() => {
     fetchFiles();
@@ -127,6 +113,12 @@ function Folder() {
           />
         </div>
       </FileViewer>
+      <BottomMenu
+        id={id}
+        addButtons={contextButtons}
+        openMobileMenu={openMobileMenu}
+        setOpenMobileMenu={setOpenMobileMenu}
+      />
     </div>
   );
 }

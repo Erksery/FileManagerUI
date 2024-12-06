@@ -3,27 +3,19 @@ import React, { useState } from "react";
 import styles from "./Registration.module.scss";
 import AuthContainer from "../../components/AuthContainer/AuthContainer";
 import { Link, useNavigate } from "react-router-dom";
+import { useRegistration } from "../../hooks/useRegistration";
 
 function Registration() {
   const [inputValue, setInputValue] = useState({ login: "", password: "" });
-  const navigate = useNavigate();
-
-  const regSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post("/api/user/registration", inputValue);
-      console.log(res.data.token);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch (err) {
-      console.log("Ошибка при регистрации", err);
-    }
-  };
+  const { registration } = useRegistration();
 
   return (
     <>
       <AuthContainer>
-        <form onSubmit={regSubmit} className={styles.regContainer}>
+        <form
+          onSubmit={(e) => registration(inputValue, e)}
+          className={styles.regContainer}
+        >
           <p className={styles.pageName}>Регистрация</p>
           <h1>Добро пожаловать!</h1>
           <p>

@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
-import styles from "./ErrorComponent.module.scss";
+import React, { useEffect, useState } from "react";
+import styles from "./Alert.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { clearError } from "../../store/slices/errors";
+import { useMobile } from "../../hooks/useMobile";
 
-export const ErrorComponent = () => {
+export const Alert = () => {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.error.error);
+  const { isMobile } = useMobile();
 
   useEffect(() => {
     if (error) {
@@ -27,7 +29,7 @@ export const ErrorComponent = () => {
       case "5":
         return "#9c27b0";
       default:
-        return "#2196f3";
+        return "#202020";
     }
   };
 
@@ -35,7 +37,10 @@ export const ErrorComponent = () => {
     <AnimatePresence>
       {error?.data?.error && (
         <motion.div
-          style={{ backgroundColor: getBackgroundColor() }}
+          style={{
+            backgroundColor: getBackgroundColor(),
+            width: isMobile && "90%",
+          }}
           className={styles.container}
           initial={{ y: 20, opacity: 0, x: "-50%" }}
           animate={{ y: 0, opacity: 1, x: "-50%" }}
@@ -44,7 +49,6 @@ export const ErrorComponent = () => {
             duration: 0.2,
           }}
         >
-          {error.status && error.status}
           {error.data.error && error.data.error}
         </motion.div>
       )}

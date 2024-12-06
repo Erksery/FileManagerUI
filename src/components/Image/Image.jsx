@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { motion } from "framer-motion";
 import styles from "./Image.module.scss";
 
-function Image({ id, blur = true }) {
+export const Image = memo(({ id, blur = true }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const imageUrl = `http://localhost:3005/image/${id}`;
+  const url = "http://192.168.0.106:3005";
+  const imageUrl = `${url}/image/${id}`;
+  const compressImage = `${url}/compressedImage/${id}`;
 
   const handleLoad = () => {
     setIsLoading(false);
@@ -12,9 +14,7 @@ function Image({ id, blur = true }) {
 
   return (
     <>
-      {isLoading && (
-        <div className={styles.loadingPlaceholder}>Загрузка...</div>
-      )}
+      {isLoading && <div className={styles.loadingPlaceholder}></div>}
       <div
         className={styles.imageContainer}
         style={{
@@ -24,7 +24,7 @@ function Image({ id, blur = true }) {
         {blur && (
           <div
             className={styles.backgroundImage}
-            style={{ backgroundImage: `url(${imageUrl})` }}
+            style={{ backgroundImage: `url(${compressImage})` }}
           />
         )}
 
@@ -34,7 +34,7 @@ function Image({ id, blur = true }) {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={styles.image}
           loading=" lazy"
-          src={imageUrl}
+          src={compressImage}
           onLoad={handleLoad}
           draggable="false"
           alt="Загружаемое изображение"
@@ -42,6 +42,4 @@ function Image({ id, blur = true }) {
       </div>
     </>
   );
-}
-
-export default React.memo(Image);
+});

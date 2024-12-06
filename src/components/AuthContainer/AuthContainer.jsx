@@ -3,22 +3,26 @@ import { motion } from "framer-motion";
 import styles from "./AuthContainer.module.scss";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import blockImage from "../../static/5192904632878359556.jpg";
+import { useMobile } from "../../hooks/useMobile";
+
+import { Logo } from "../Svg/Logo";
 
 function AuthContainer({ children }) {
+  const { isMobile } = useMobile();
+
   return (
     <div className={styles.container}>
+      {isMobile && (
+        <div className={styles.logoContainer}>
+          <Logo width={50} height={50} isAnimating={true} />
+          <h2>ARTTECH PRODUCTION</h2>
+        </div>
+      )}
+
       <div className={styles.loginBlock}>{children}</div>
       <div className={styles.imageBlock}>
-        <motion.img
-          src={blockImage}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          loading=" lazy"
-          draggable="false"
-          alt="Загружаемое изображение"
-        />
+        <Logo width={130} height={130} isAnimating={true} />
+        <h2>ARTTECH PRODUCTION</h2>
       </div>
     </div>
   );

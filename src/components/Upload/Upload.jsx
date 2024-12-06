@@ -62,7 +62,6 @@ const Upload = forwardRef(({ onUpload, isFolderUpload }, ref) => {
           multiple
           onChange={handleFileChange}
           style={{ display: "none" }}
-          // Добавляем атрибут webkitdirectory, если выбран режим загрузки папки
           {...(isFolderUpload && { webkitdirectory: "true" })}
         />
         {files.length > 0 ? (
@@ -77,7 +76,7 @@ const Upload = forwardRef(({ onUpload, isFolderUpload }, ref) => {
                   <p>{file.name}</p>
                   <div className={styles.additionalInfo}>
                     <p>{file.type}</p>
-                    <p>{(file.size / 1024).toFixed(2)} МБ</p>
+                    <p>{(file.size / 1024).toFixed(2)} КБ</p>
                   </div>
                 </div>
               </div>
